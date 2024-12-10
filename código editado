@@ -1,0 +1,127 @@
+class Personaje:
+    """
+    Clase base para representar un personaje con atributos básicos.
+    """
+    def _init_(self, nombre, fuerza, inteligencia, defensa, vida):
+        if any(attr < 0 for attr in [fuerza, inteligencia, defensa, vida]):
+            raise ValueError("Los atributos no pueden ser negativos.")
+        self.nombre = nombre
+        self.fuerza = fuerza
+        self.inteligencia = inteligencia
+        self.defensa = defensa
+        self.vida = vida
+
+    def atributos(self):
+        """Imprime los atributos del personaje."""
+        print(f"{self.nombre}:")
+        print(f"· Fuerza: {self.fuerza}")
+        print(f"· Inteligencia: {self.inteligencia}")
+        print(f"· Defensa: {self.defensa}")
+        print(f"· Vida: {self.vida}")
+
+    def subir_nivel(self, fuerza=0, inteligencia=0, defensa=0):
+        """Aumenta los atributos del personaje."""
+        self.fuerza += fuerza
+        self.inteligencia += inteligencia
+        self.defensa += defensa
+
+    def esta_vivo(self):
+        """Devuelve True si el personaje tiene vida."""
+        return self.vida > 0
+
+    def morir(self):
+        """Mata al personaje."""
+        self.vida = 0
+        print(f"{self.nombre} ha muerto")
+
+    def calcular_daño(self, enemigo):
+        """Calcula el daño base al enemigo."""
+        return max(self.fuerza - enemigo.defensa, 0)
+
+    def atacar(self, enemigo):
+        """Realiza un ataque al enemigo."""
+        daño = self.calcular_daño(enemigo)
+        enemigo.vida -= daño
+        print(f"{self.nombre} ha realizado {daño} puntos de daño a {enemigo.nombre}")
+        if enemigo.esta_vivo():
+            print(f"Vida de {enemigo.nombre}: {enemigo.vida}")
+        else:
+            enemigo.morir()
+
+
+class Guerrero(Personaje):
+    """Clase para representar un guerrero con una espada."""
+    def _init_(self, nombre, fuerza, inteligencia, defensa, vida, espada):
+        super()._init_(nombre, fuerza, inteligencia, defensa, vida)
+        self.espada = espada
+
+    def cambiar_arma(self):
+        """Cambia el arma del guerrero según la opción seleccionada."""
+        opciones = {1: 8, 2: 10}
+        try:
+            opcion = int(input("Elige un arma: (1) Acero Valyrio, daño 8. (2) Matadragones, daño 10: "))
+            self.espada = opciones.get(opcion, self.espada)
+            if opcion in opciones:
+                print(f"Has cambiado tu espada. Nuevo daño: {self.espada}")
+            else:
+                print("Número de arma incorrecto, el daño de espada no cambia.")
+        except ValueError:
+            print("Entrada inválida, el daño de espada no cambia.")
+
+    def atributos(self):
+        """Muestra los atributos del guerrero, incluyendo el arma."""
+        super().atributos()
+        print(f"· Espada: {self.espada}")
+
+    def calcular_daño(self, enemigo):
+        """Calcula el daño teniendo en cuenta el arma."""
+        return max((self.fuerza * self.espada) - enemigo.defensa, 0)
+
+
+class Mago(Personaje):
+    """Clase para representar un mago con un libro de hechizos."""
+    def _init_(self, nombre, fuerza, inteligencia, defensa, vida, libro):
+        super()._init_(nombre, fuerza, inteligencia, defensa, vida)
+        self.libro = libro
+
+    def atributos(self):
+        """Muestra los atributos del mago, incluyendo el libro."""
+        super().atributos()
+        print(f"· Libro: {self.libro}")
+
+    def calcular_daño(self, enemigo):
+        """Calcula el daño teniendo en cuenta el libro."""
+        return max((self.inteligencia * self.libro) - enemigo.defensa, 0)
+
+
+def combate(jugador_1, jugador_2):
+    """Simula un combate entre dos personajes."""
+    turno = 1
+    while jugador_1.esta_vivo() and jugador_2.esta_vivo():
+        print(f"\nTurno {turno}")
+        print(f"--- Acción de {jugador_1.nombre} ---")
+        jugador_1.atacar(jugador_2)
+        if jugador_2.esta_vivo():
+            print(f"--- Acción de {jugador_2.nombre} ---")
+            jugador_2.atacar(jugador_1)
+        turno += 1
+
+    if jugador_1.esta_vivo():
+        print(f"\n{jugador_1.nombre} ha ganado el combate.")
+    elif jugador_2.esta_vivo():
+        print(f"\n{jugador_2.nombre} ha ganado el combate.")
+    else:
+        print("\nEl combate ha terminado en empate.")
+
+
+# Prueba del código
+personaje_1 = Guerrero("Guts", 20, 10, 4, 100, 4)
+personaje_2 = Mago("Vanessa", 5, 15, 4, 100, 3)
+
+print("\n--- Atributos iniciales ---")
+personaje_1.atributos()
+personaje_2.atributos()
+
+print("\n--- Inicio del combate ---")
+combate(personaje_1, personaje_2)
+
