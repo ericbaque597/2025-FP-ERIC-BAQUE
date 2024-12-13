@@ -1,0 +1,91 @@
+class ClimaDiario:
+    """
+    Clase que representa la información diaria del clima.
+    """
+    def __init__(self, fecha, temperatura, humedad, precipitacion):
+        self.__fecha = fecha
+        self.__temperatura = temperatura  # En grados Celsius
+        self.__humedad = humedad  # En porcentaje
+        self.__precipitacion = precipitacion  # En mm
+
+    # Métodos getters
+    def obtener_fecha(self):
+        return self.__fecha
+
+    def obtener_temperatura(self):
+        return self.__temperatura
+
+    def obtener_humedad(self):
+        return self.__humedad
+
+    def obtener_precipitacion(self):
+        return self.__precipitacion
+
+    # Métodos setters
+    def establecer_temperatura(self, temperatura):
+        self.__temperatura = temperatura
+
+    def establecer_humedad(self, humedad):
+        self.__humedad = humedad
+
+    def establecer_precipitacion(self, precipitacion):
+        self.__precipitacion = precipitacion
+
+class ResumenClimatico:
+    """
+    Clase que gestiona y calcula información del clima para un conjunto de días.
+    """
+    def __init__(self):
+        self.__registros = []
+
+    def agregar_registro(self, clima_diario):
+        if isinstance(clima_diario, ClimaDiario):
+            self.__registros.append(clima_diario)
+        else:
+            raise TypeError("El registro debe ser una instancia de la clase ClimaDiario.")
+
+    def calcular_promedio_semanal(self):
+        """
+        Calcula el promedio semanal de temperatura, humedad y precipitación.
+        """
+        if len(self.__registros) == 0:
+            return None
+
+        total_temperatura = sum(r.obtener_temperatura() for r in self.__registros)
+        total_humedad = sum(r.obtener_humedad() for r in self.__registros)
+        total_precipitacion = sum(r.obtener_precipitacion() for r in self.__registros)
+
+        promedio_temperatura = total_temperatura / len(self.__registros)
+        promedio_humedad = total_humedad / len(self.__registros)
+        promedio_precipitacion = total_precipitacion / len(self.__registros)
+
+        return {
+            "temperatura": promedio_temperatura,
+            "humedad": promedio_humedad,
+            "precipitacion": promedio_precipitacion
+        }
+
+# Ejemplo de uso
+if __name__ == "__main__":
+    # Crear la instancia del resumen climático
+    resumen = ResumenClimatico()
+
+    # Agregar registros diarios
+    resumen.agregar_registro(ClimaDiario("2024-12-01", 22.5, 65, 12.3))
+    resumen.agregar_registro(ClimaDiario("2024-12-02", 24.0, 70, 8.0))
+    resumen.agregar_registro(ClimaDiario("2024-12-03", 21.0, 60, 0.0))
+    resumen.agregar_registro(ClimaDiario("2024-12-04", 23.0, 55, 5.6))
+    resumen.agregar_registro(ClimaDiario("2024-12-05", 20.0, 50, 0.0))
+    resumen.agregar_registro(ClimaDiario("2024-12-06", 19.0, 45, 3.2))
+    resumen.agregar_registro(ClimaDiario("2024-12-07", 18.5, 40, 2.1))
+
+    # Calcular el promedio semanal
+    promedio = resumen.calcular_promedio_semanal()
+
+    if promedio:
+        print("Promedio semanal:")
+        print(f"Temperatura: {promedio['temperatura']:.2f}°C")
+        print(f"Humedad: {promedio['humedad']:.2f}%")
+        print(f"Precipitación: {promedio['precipitacion']:.2f} mm")
+    else:
+        print("No hay registros disponibles para calcular el promedio.")
