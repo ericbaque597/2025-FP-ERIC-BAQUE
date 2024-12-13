@@ -1,1 +1,52 @@
+def solicitar_temperaturas():
+    """
+    Solicita las temperaturas diarias al usuario.
+    
+    Retorna:
+        list: Lista con las temperaturas ingresadas por el usuario.
+    """
+    temperaturas = []
+    print("Introduce las temperaturas diarias (7 días):")
+    for dia in range(1, 8):
+        while True:
+            try:
+                temp = float(input(f"Día {dia}: "))
+                temperaturas.append(temp)
+                break
+            except ValueError:
+                print("Por favor, introduce un número válido.")
+    return temperaturas
+
+def calcular_promedio(temperaturas):
+    """
+    Calcula el promedio de una lista de temperaturas.
+    
+    Args:
+        temperaturas (list): Lista de temperaturas.
+    
+    Retorna:
+        float: El promedio de las temperaturas.
+    """
+    return sum(temperaturas) / len(temperaturas)
+
+def mostrar_resultados(promedio):
+    """
+    Muestra el promedio semanal calculado.
+    
+    Args:
+        promedio (float): Promedio de temperaturas.
+    """
+    print(f"\nEl promedio semanal de temperaturas es: {promedio:.2f}°C")
+
+def main():
+    """
+    Función principal que organiza el flujo del programa.
+    """
+    temperaturas = solicitar_temperaturas()
+    promedio = calcular_promedio(temperaturas)
+    mostrar_resultados(promedio)
+
+# Ejecutar el programa
+if __name__ == "__main__":
+    main()
 
